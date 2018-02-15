@@ -5,6 +5,7 @@ Rails.application.routes.draw do
       get '/logout' => 'users#logout'
       post '/facebook' => 'users#facebook'
       get '/user_count' => 'users#all_users'
+      post '/payments' => "users#add_card"
       resources :rooms
     end
   end
