@@ -38,19 +38,18 @@ class API::V1::roomsController < ApplicationController
 
     reservations = Reservation.where(
       "room_id = ? AND (start_date >= ? AND end_date >= ?) AND status = ?",
-      room.id, today, today, 1
+      params[:id], today, today, 1
     )
 
     unavaliable_dates = reservations.map{|res|
       (res[:start_date].to_datetime...res[:end_date].to_datetime).map {|day|
-        day.strftime("%Y-%M-%D")
+        day.strftime("%Y-%m-%d")
       }.flatten.to_set
     }
 
     calendars = Calendar.where(
       "room_id = ? AND status = ? AND day> = ?",
-      room.id, 1, today
-    ).pluck(:day).map(&:to_datetime).map {|day| day.strftime("%Y-%M-%D")}.flatten.to_set
+      params[:id], 1, today).pluck(:day).map(&:to_datetime).map {|day| day.strftime("%Y-%m-%d")}.flatten.to_set
 
     unavaliable_dates.merge calendars
 
@@ -58,12 +57,12 @@ class API::V1::roomsController < ApplicationController
       room_serializer = RoomSerializer.new(
         room,
         image: room.cover_photo("medium"),
-        avatar_url: room.user.image,
         unavaliable_dates: unavaliable_dates
       )
       render json: {room: room_serializer, is_success: true}, status: :ok
     else
       render json: {error: "Invalid ID", is_success: false}, status: 422
     end
+
   end
 end
