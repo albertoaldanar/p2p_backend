@@ -7,6 +7,7 @@ Rails.application.routes.draw do
       get '/user_count' => 'users#all_users'
       post '/payments' => "users#add_card"
       resources :rooms
+      resourses :reservations
     end
   end
 end
