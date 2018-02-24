@@ -37,6 +37,16 @@ class Api::V1::reservationsController < ApplicationController
     end
   end
 
+  def reservations_by_room
+    reservations = Reservation.where(room_id: params[:id])
+    reservations = reservations.map do | res |
+      ReservationSerializer.new(res, avatar_url: res.user.image)
+    end
+    render json: {reservations: reservations, is_success: true }, status: :ok
+  end
+
+  end
+
   private
 
   def require_params
@@ -68,6 +78,5 @@ class Api::V1::reservationsController < ApplicationController
     render json: {error: e.message, is_success: false}, status: 404
 
   end
-
 
 end
