@@ -1,5 +1,6 @@
 class Api::V1::reservationsController < ApplicationController
   before_action :authenticate_with_token!
+  before_action :set_reservation, only: [:approved, :declinded]
 
   def create
     room = Room.find(params[:room_id])
@@ -45,6 +46,23 @@ class Api::V1::reservationsController < ApplicationController
     render json: {reservations: reservations, is_success: true }, status: :ok
   end
 
+  def approved
+    if @reservation.room.user_id == current_user.id
+      charge(@reservation.room, @reservation)
+      render json: { is_success: true }, status: :ok
+    else
+      render json: { error: "No permission", is_success: false }, status: 422
+    end
+
+  end
+
+  def declined
+    if @reservation.room.user_id == current_user.id
+      @reservation.Declined
+      render json: { is_success: true }, status: :ok
+    else
+      render json: { error: "No permission", is_success: false }, status: 422
+    end
   end
 
   private
@@ -53,7 +71,11 @@ class Api::V1::reservationsController < ApplicationController
     params.require(:reservations).permit(:start_date, :end_date)
   end
 
-  def charge
+  def set_reservation
+    @reservation = Reservation.find(params[:id])
+  end
+
+  def charge(room, reservation)
     if !reservation.user.stripe_id.blank? && !room.user.merchant_id.blank?
       customer = Stripe::Customer.retrive(reservation.user.stripe_id)
       charge = Stripe::Charge.create(
@@ -66,7 +88,6 @@ class Api::V1::reservationsController < ApplicationController
           :account => room.user.merchant_id
         }
       )
-
       if charge
         reservation.Approved!
       else
@@ -76,7 +97,6 @@ class Api::V1::reservationsController < ApplicationController
   rescue Stripe::CardError => e
     reservation.Declined!
     render json: {error: e.message, is_success: false}, status: 404
-
   end
 
-end
+ end

@@ -7,11 +7,15 @@ Rails.application.routes.draw do
       get '/user_count' => 'users#all_users'
       post '/payments' => "users#add_card"
       get '/listing' => "rooms#your_listing"
-      get '/'
-      resources :rooms
-      resourses :reservations do
+      resources :rooms do
         member do
-          get 'reservation' => "reservations#reservations_by_room"
+          get 'reservations' => "reservations#reservations_by_room" #localhost/rooms/4/reservations
+        end
+      end
+      resources :reservations do
+        member do
+          post 'approved' => 'reservations#approved'
+          post 'declined' => 'reservations#declined'
         end
       end
     end
