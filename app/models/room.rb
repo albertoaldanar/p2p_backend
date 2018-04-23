@@ -21,7 +21,7 @@ class Room < ApplicationRecord
     if self.photos.length > 0
       self.photos[0].image.url(size)
     else
-      "blank.jpg"
+      "https://i.ebayimg.com/images/g/7N0AAOSwhqhaK3Qj/s-l960.jpg"
     end
   end
 
