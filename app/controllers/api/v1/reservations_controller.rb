@@ -34,7 +34,7 @@ class Api::V1::reservationsController < ApplicationController
         charge(room, reservation)
       end
 
-      render json: {is_success: true}, status: :ok
+      render json: { is_success: true }, status: :ok
     end
   end
 
@@ -98,5 +98,4 @@ class Api::V1::reservationsController < ApplicationController
     reservation.Declined!
     render json: {error: e.message, is_success: false}, status: 404
   end
-
  end

@@ -1,10 +1,10 @@
 class RoomSerializer < ActiveModel::Serializer
-  attributes  :id, :listing_name, :address,
-              :home_type, :bed_room, :bath_room,
-              :summary, :price, :acitve, :image, :unavailable_dates
+  attributes :id, :listing_name, :address,
+             :home_type, :bed_room, :bath_room, :summary,
+             :price, :active, :image, :unavailable_dates
 
-  def unavaliable_dates
-    @instance_options[:unavaliable_dates]
+  def unavailable_dates
+    @instance_options[:unavailable_dates]
   end
 
   def image
@@ -14,5 +14,7 @@ class RoomSerializer < ActiveModel::Serializer
   class UserSerializer < ActiveModel::Serializer
     attributes :email, :fullname, :image
   end
+
   belongs_to :user, serializer: UserSerializer, key: :host
 end
+
