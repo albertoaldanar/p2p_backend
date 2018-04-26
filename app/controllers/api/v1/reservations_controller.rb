@@ -1,4 +1,4 @@
-class Api::V1::reservationsController < ApplicationController
+class Api::V1::ReservationsController < ApplicationController
   before_action :authenticate_with_token!
   before_action :set_reservation, only: [:approved, :declinded]
 
@@ -17,7 +17,7 @@ class Api::V1::reservationsController < ApplicationController
       days = (start_date - end_date).to_i + 1
 
       special_days = Calendar.where(
-        "room_id = ? AND status = ? AND day BETWEEN ? AND ? AND price <> ?"
+        "room_id = ? AND status = ? AND day BETWEEN ? AND ? AND price <> ?",
         room.id, 0, start_date, end_date, room.price
       ).pluck(:price)
 

@@ -4,18 +4,18 @@ Rails.application.routes.draw do
     namespace :v1 do
       get '/logout' => 'users#logout'
       post '/facebook' => 'users#facebook'
-      get '/user_count' => 'users#all_users'
-      post '/payments' => "users#add_card"
-      get '/listing' => "rooms#your_listing"
+      post '/payments' => 'users#add_card'
+      get '/listings' => 'rooms#your_listings'
+
       resources :rooms do
         member do
-          get 'reservations' => "reservations#reservations_by_room" #localhost/rooms/4/reservations
+          get '/reservations' => 'reservations#reservations_by_room'
         end
       end
       resources :reservations do
         member do
-          post 'approved' => 'reservations#approved'
-          post 'declined' => 'reservations#declined'
+          post '/approve' => 'reservations#approve'
+          post '/decline' => 'reservations#decline'
         end
       end
     end
